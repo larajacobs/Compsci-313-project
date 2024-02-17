@@ -19,11 +19,8 @@ public class client {
 
       
         // Open an input stream and output stream to the socket.
-        System.out.println("Creating OutputStream");
         ObjectOutputStream OutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-        System.out.println("Creating InpuStream");
         ObjectInputStream InputStream = new ObjectInputStream(clientSocket.getInputStream());
-        System.out.println("Creating BufferedReader");
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
         // Read from and write to the stream according to the server's protocol.

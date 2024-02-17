@@ -4,11 +4,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class server_thread {
+    private static final List<clientThread> client_threads = new ArrayList<>();
+
     public static void main(String[] args) {
         int portNumber = 5000;
-
+        
         try {
             ServerSocket serverSocket = new ServerSocket(portNumber);
             System.out.println("The server is listening on port : " + portNumber);
@@ -20,6 +24,7 @@ public class server_thread {
                 
                 // Create a thread for each client that connects to server
                 Thread clientThread  = new Thread(new clientThread(clientSocket));
+                client_threads.add(new clientThread(clientSocket));
                 clientThread.start();
             }
 
@@ -41,12 +46,10 @@ public class server_thread {
 
                 // Open an input stream and output stream to the socket.
                 
-                System.out.println("Creating OutputStream");
                 ObjectOutputStream OutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-                System.out.println("Creating InpuStream");
                 ObjectInputStream InputStream = new ObjectInputStream(clientSocket.getInputStream());
-                System.out.println("Creating BufferedReader");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                
                 // Communication loop
                 String message;
             
@@ -60,10 +63,19 @@ public class server_thread {
                     System.out.println("Client: " + message);
 
                     // Send response to client
-                    System.out.print("Server: ");
-                    message = reader.readLine();
-                    OutputStream.writeObject(message);
-                    OutputStream.flush();
+
+                    synchronized (client_threads) {
+                        for (clientThread otherClient: client_threads) {
+                            // If not the input thread send message from server
+                            if (otherClient != this) {
+                                System.out.print("Server: ");
+                                message = reader.readLine();
+                                OutputStream.writeObject(message);
+                                OutputStream.flush();
+                            }
+                        }
+                    }
+                    
                 }
                 
                 // Close streams and socket
