@@ -13,13 +13,17 @@ public class server_thread {
             ServerSocket serverSocket = new ServerSocket(portNumber);
             System.out.println("The server is listening on port : " + portNumber);
 
-            // Continue to connect clients as they try to connect
-            while (true) {
+            // Continue to connect clients while the server socket is open
+            while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client Connected : " + clientSocket);
-
+                
+                // Create a thread for each client that connects to server
                 Thread clientThread  = new Thread(new clientThread(clientSocket));
+                clientThread.start();
             }
+
+            serverSocket.close();
         } catch (Exception e) {
             System.out.println("The Server could not listen on port : " + portNumber);
         }
@@ -34,10 +38,15 @@ public class server_thread {
 
         public void run() {
             try {
-                ObjectOutputStream OutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-                ObjectInputStream InputStream = new ObjectInputStream(clientSocket.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+                // Open an input stream and output stream to the socket.
+                
+                System.out.println("Creating OutputStream");
+                ObjectOutputStream OutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+                System.out.println("Creating InpuStream");
+                ObjectInputStream InputStream = new ObjectInputStream(clientSocket.getInputStream());
+                System.out.println("Creating BufferedReader");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 // Communication loop
                 String message;
             
