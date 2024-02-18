@@ -41,8 +41,6 @@ public class client {
             System.out.println("exits");
             break;
           } 
-            // out.println(userInputLine); // Send user input to server
-            // System.out.println("Server: " + Inp.readLine()); // Receive and print server's response
         }
 
         // Close streams and socket when user disconnects
