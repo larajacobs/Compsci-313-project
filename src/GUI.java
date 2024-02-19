@@ -31,7 +31,7 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // Display list of all clients
+        /* List of all clients */
         VBox col1 = new VBox();
         for (Client onlineClient : onlineClients) {
             HBox clientSec = new HBox();
@@ -80,23 +80,28 @@ public class GUI extends Application {
         Separator divider = new Separator();
         divider.setOrientation(Orientation.VERTICAL);
 
+        /* Messaging Section */
+
+        // Display Inputted Msg
+        Text msgPrint = new Text();
+        msgPrint.setFill(Color.BLACK);
+
         // Text Input Box
-        TextField textField1 = new TextField();
-        textField1.setPromptText("Enter your message here");
-        textField1.setPrefWidth(600);
+        TextField msgInput = new TextField();
+        msgInput.setPromptText("Enter your message here");
+        msgInput.setPrefWidth(600);
 
         // Send Button
         Button sendButton = new Button("Send");
-
-        /* Send msg
-        button1.setOnAction(e -> {
-            String input = textField1.getText();
-        }); */
+        sendButton.setOnAction(event -> {
+            String msgSent = msgInput.getText();
+            msgPrint.setText(msgSent);
+        });
 
         VBox col2 = new VBox();
         col2.setPadding(new Insets(10));
         col2.setMargin(sendButton, new javafx.geometry.Insets(10, 0, 0, 0));
-        col2.getChildren().addAll(textField1, sendButton);
+        col2.getChildren().addAll(msgPrint, msgInput, sendButton);
 
         HBox hbox = new HBox(col1, divider, col2);
 
