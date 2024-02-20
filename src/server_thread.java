@@ -52,7 +52,28 @@ public class server_thread {
             outputStream.flush();
             System.out.println("Message sent");
         }
-        
+
+        // Send message to all connected clients
+        private void broadcast(String message) throws IOException {
+            for (clientThread otherClient: client_threads) {
+                // If not the input thread send message from server
+                if (otherClient != this) {
+                    otherClient.sendMessage(message);
+                }
+            }
+        }
+
+        // Send message to specific client
+        private void whisper(String message, String target) throws IOException {
+            for (clientThread otherClient: client_threads) {
+                // use this to make sure you send to target
+                if (otherClient != this) {
+                    otherClient.sendMessage(message);
+                }
+            }
+        }
+
+
         // Should disconnect the client
         private void disconnect() {
             try {
@@ -82,16 +103,11 @@ public class server_thread {
                         disconnect();
                         break;
                     }
-                    System.out.println("Client: " + message);
+                    System.out.println("Client sent: " + message);
 
-                    // Send response to client
+                    // Send response to all clients
                     synchronized (client_threads) {
-                        for (clientThread otherClient: client_threads) {
-                            // If not the input thread send message from server
-                            if (otherClient != this) {
-                                otherClient.sendMessage(message);
-                            }
-                        }
+                        broadcast(message);
                     }
                 }
                 

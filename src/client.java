@@ -25,7 +25,6 @@ public class client {
 
         // Read from and write to the stream according to the server's protocol.
         String userInputLine;
-        System.out.println("Before while loop");
         
         while(true) {
           System.out.print("Client: ");
@@ -50,7 +49,7 @@ public class client {
         clientSocket.close();
         
       } catch (Exception e) {
-        // TODO: handle exception
+        System.out.println("Client sided error");
       }
 
        
